@@ -42,6 +42,38 @@
   --slide-h: 100svh;
 }
 html { scroll-behavior: smooth; }
+/* À remplacer au début de ton code (Section RESET & BASE) */
+html { 
+  scroll-behavior: smooth; 
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+html::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari, Opéra */
+}
+
+body {
+  font-family: Figtree, sans-serif;
+  background: var(--bleu);
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* ─── SCROLL SNAP ──────────────────────────────────────────────────── */
+.deck {
+  height: 100svh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;         /* Désactive la barre sur le conteneur (Firefox) */
+  -ms-overflow-style: none;     /* (IE / Edge) */
+}
+/* Désactive la barre sur le conteneur (Chrome, Safari, Opéra) */
+.deck::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   font-family: Figtree, sans-serif;
   background: var(--bleu);
@@ -895,8 +927,8 @@ body {
         <p class="desc animate delay-2">Plus grand monument historique privé de France · Famille de Vogüé · 5ᵉ génération</p>
         <div class="info-items animate delay-3">
           <div class="info-item"><span class="info-dot"></span>1 000 ha dont 33 ha de jardins à la française</div>
-          <div class="info-item"><span class="info-dot"></span>20 % de visiteurs étrangers</div>
-          <div class="info-item"><span class="info-dot"></span>Famille de Vogüé — 5ᵉ génération</div>
+          <div class="info-item"><span class="info-dot"></span>5 structures juridiques · 3 conventions collectives</div>
+          <div class="info-item"><span class="info-dot"></span>ELAC · HCR · Convention agricole</div>
           <div class="info-item"><span class="info-dot"></span>Jusqu'à 5 000 visiteurs/jour en période de Noël</div>
         </div>
       </div>
@@ -904,12 +936,12 @@ body {
       <div>
         <div class="kpi-grid">
           <div class="kpi-card animate delay-2">
-            <span class="kpi-num">87</span>
-            <span class="kpi-label">CDI</span>
+            <span class="kpi-num">300K</span>
+            <span class="kpi-label">visiteurs / an</span>
           </div>
           <div class="kpi-card animate delay-3">
-            <span class="kpi-num">~ 140</span>
-            <span class="kpi-label">salariés en saison</span>
+            <span class="kpi-num">20%</span>
+            <span class="kpi-label">visiteurs étrangers</span>
           </div>
           <div class="kpi-card animate delay-4">
             <span class="kpi-num">5</span>
