@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandrine PAYET — Soutenance RRH · Vaux-le-Vicomte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bleu:    #002D41;
+  --bleu2:   #003D55;
+  --bleu3:   #00587A;
+  --beige:   #F0D7AA;
+  --beige2:  #C8A84B;
+  --cream:   #FAF3E8;
+  --cream2:  #F2E8D5;
+  --white:   #FFFFFF;
+  --dark:    #1A1A2E;
+  --gray:    #8A8070;
+  --teal:    #1A6B7C;
+  --red-soft:#7A3535;
+  --green-soft:#2E5B3A;
+  --slide-h: 100svh;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bleu);
+  color: var(--white);
+  overflow-x: hidden;
+}
+/* ─── SCROLL SNAP ──────────────────────────────────────────────────── */
+.deck {
+  height: 100svh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.slide {
+  min-height: 100svh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ─── NAV DOTS ─────────────────────────────────────────────────────── */
+.nav-dots {
+  position: fixed; right: 1.8rem; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: .65rem; z-index: 100;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(240,215,170,.3); border: 1.5px solid rgba(240,215,170,.5);
+  cursor: pointer; transition: all .3s ease;
+}
+.nav-dot.active { background: var(--beige); transform: scale(1.4); }
+
+/* ─── PROGRESS BAR ─────────────────────────────────────────────────── */
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--beige2), var(--beige));
+  z-index: 200; transition: width .4s ease;
+}
+
+/* ─── SLIDE COUNTER ────────────────────────────────────────────────── */
+.slide-counter {
+  position: fixed; bottom: 1.5rem; right: 2rem;
+  font-family: 'Inter', sans-serif; font-size: .7rem; font-weight: 500;
+  color: rgba(240,215,170,.5); letter-spacing: .15em; z-index: 100;
+}
+
+/* ─── ANIMATIONS ───────────────────────────────────────────────────── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeLeft { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0); } }
+@keyframes fadeRight{ from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0); } }
+@keyframes scaleIn  { from { opacity:0; transform:scale(.85); } to { opacity:1; transform:scale(1); } }
+@keyframes lineGrow { from { width:0; } to { width:var(--lw,100%); } }
+@keyframes countUp  { from { opacity:0; transform:translateY(20px) scale(.9); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes pulse    { 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
+@keyframes float    { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
+@keyframes shimmer  {
+  0%  { background-position: -200% center; }
+  100%{ background-position:  200% center; }
+}
+
+.animate { opacity: 0; }
+.slide.visible .animate { animation: fadeUp .7s ease forwards; }
+.slide.visible .anim-left  { animation: fadeLeft  .7s ease forwards; }
+.slide.visible .anim-right { animation: fadeRight .7s ease forwards; }
+.slide.visible .anim-scale { animation: scaleIn   .6s ease forwards; }
+.slide.visible .anim-fade  { animation: fadeIn    .8s ease forwards; }
+[class*="delay-1"] { animation-delay: .1s !important; }
+[class*="delay-2"] { animation-delay: .25s !important; }
+[class*="delay-3"] { animation-delay: .4s !important; }
+[class*="delay-4"] { animation-delay: .55s !important; }
+[class*="delay-5"] { animation-delay: .7s !important; }
+[class*="delay-6"] { animation-delay: .85s !important; }
+[class*="delay-7"] { animation-delay: 1s !important; }
+[class*="delay-8"] { animation-delay: 1.15s !important; }
+
+/* ─── SHARED COMPONENTS ────────────────────────────────────────────── */
+.badge {
+  display: inline-block; font-family:'Inter',sans-serif;
+  font-size:.62rem; font-weight:600; letter-spacing:.18em;
+  text-transform:uppercase; padding:.35rem .9rem;
+  border-radius:2rem; border:1px solid rgba(240,215,170,.4);
+  color: var(--beige); background: rgba(240,215,170,.08);
+}
+.gold-line {
+  height:2px; background: linear-gradient(90deg, var(--beige2), transparent);
+  border:none; margin: 1.2rem 0;
+  animation: lineGrow .8s ease forwards;
+  --lw: 4rem; width: 4rem;
+}
+.card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(240,215,170,.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+  padding: 1.5rem;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.card:hover {
+  border-color: rgba(240,215,170,.4);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.card-dark {
+  background: rgba(0,45,65,.6);
+  border: 1px solid rgba(240,215,170,.2);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+}
+.tag {
+  font-family:'Inter',sans-serif; font-size:.6rem; font-weight:700;
+  letter-spacing:.2em; text-transform:uppercase;
+  padding:.25rem .7rem; border-radius:.3rem;
+  display: inline-block; margin-bottom:.6rem;
+}
+.tag-teal { background: rgba(26,107,124,.25); color: #5DCCDC; border:1px solid rgba(26,107,124,.4); }
+.tag-red  { background: rgba(122,53,53,.25);  color: #E88888; border:1px solid rgba(122,53,53,.4); }
+.tag-green{ background: rgba(46,91,58,.25);   color: #7DD89A; border:1px solid rgba(46,91,58,.4); }
+.tag-gold { background: rgba(200,168,75,.15); color: var(--beige2); border:1px solid rgba(200,168,75,.3); }
+.tag-bleu { background: rgba(0,88,122,.25);   color: #7DC3DC; border:1px solid rgba(0,88,122,.4); }
+
+.precon-box {
+  background: linear-gradient(135deg, rgba(0,57,80,.9), rgba(0,45,65,.95));
+  border: 1.5px solid rgba(200,168,75,.5);
+  border-radius: 1rem; padding: 1.5rem 1.8rem;
+  position: relative; overflow: hidden;
+}
+.precon-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--beige2), transparent);
+}
+.precon-label {
+  font-family:'Inter',sans-serif; font-size:.6rem; font-weight:700;
+  letter-spacing:.22em; color: var(--beige2); text-transform:uppercase;
+  display:block; margin-bottom:.6rem;
+}
+
+/* ─── DECORATIVE ELEMENTS ──────────────────────────────────────────── */
+.deco-circle {
+  position:absolute; border-radius:50%;
+  border: 1px solid rgba(240,215,170,.08);
+  pointer-events: none;
+}
+.deco-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(240,215,170,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,215,170,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 1 — COUVERTURE
+   ═══════════════════════════════════════════════════════════════════ */
+#s1 { background: var(--bleu); }
+#s1 .hero-photo {
+  position:absolute; inset:0;
+  background: url('chateau-1.jpg') center/cover no-repeat;
+  opacity: .18; filter: saturate(.6);
+}
+#s1 .hero-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(0,45,65,.97) 50%, rgba(0,45,65,.7));
+}
+#s1 .content {
+  position:relative; z-index:2;
+  padding: 0 8vw; max-width:900px;
+}
+#s1 .eyebrow {
+  font-family:'Inter',sans-serif; font-size:.7rem; font-weight:500;
+  letter-spacing:.3em; color: var(--beige2); text-transform:uppercase;
+  margin-bottom:2rem;
+}
+#s1 h1 {
+  font-family:'Playfair Display',serif; font-size:clamp(3rem,6vw,5.5rem);
+  font-weight:900; line-height:1.05; color: var(--white);
+  margin-bottom: 1.5rem;
+}
+#s1 h1 em {
+  font-style:italic; color: var(--beige);
+  background: linear-gradient(90deg, var(--beige), var(--beige2), var(--beige));
+  background-size:200%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation: shimmer 4s linear infinite 1.5s;
+}
+#s1 .sub {
+  font-family:'Cormorant Garamond',serif; font-size:1.25rem;
+  color: rgba(240,215,170,.7); font-style:italic; margin-bottom:2.5rem;
+  line-height:1.6;
+}
+#s1 .meta {
+  display:flex; gap:2rem; flex-wrap:wrap;
+  font-family:'Inter',sans-serif; font-size:.75rem;
+  color: rgba(255,255,255,.4); letter-spacing:.08em;
+}
+#s1 .meta span { display:flex; align-items:center; gap:.4rem; }
+#s1 .scroll-hint {
+  position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  color: rgba(240,215,170,.4); font-size:.65rem; letter-spacing:.15em;
+  animation: pulse 2s ease infinite;
+}
+#s1 .scroll-hint .arrow {
+  width:1px; height:40px;
+  background: linear-gradient(to bottom, rgba(240,215,170,.5), transparent);
+}
+/* Jardins motif */
+#s1 .jardins {
+  position:absolute; right:0; top:0; bottom:0; width:45%;
+  opacity:.06; pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,   transparent, transparent 29px, rgba(240,215,170,1) 30px),
+    repeating-linear-gradient(90deg,  transparent, transparent 29px, rgba(240,215,170,1) 30px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 2 — PARCOURS
+   ═══════════════════════════════════════════════════════════════════ */
+#s2 { background: var(--cream); }
+#s2 .content { padding: 5vh 7vw; width:100%; }
+#s2 h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem);
+  color: var(--bleu); font-weight:700; margin-bottom:.3rem; }
+#s2 .sub2 { font-family:'Cormorant Garamond',serif; font-size:1.1rem;
+  color: var(--gray); font-style:italic; margin-bottom:2.5rem; }
+.timeline {
+  display:grid; grid-template-columns: repeat(3, 1fr); gap:1.5rem;
+  margin-bottom: 1.8rem;
+}
+.tl-card {
+  background: var(--white); border-radius:1rem; padding:1.8rem 1.5rem;
+  border:1px solid rgba(0,45,65,.1);
+  box-shadow: 0 4px 30px rgba(0,45,65,.07);
+  transition: transform .3s, box-shadow .3s;
+  position:relative; overflow:hidden;
+}
+.tl-card:hover { transform:translateY(-5px); box-shadow:0 16px 50px rgba(0,45,65,.13); }
+.tl-card::before {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--bleu), var(--beige2));
+}
+.tl-year {
+  font-family:'Playfair Display',serif; font-size:1.6rem;
+  color: var(--beige2); font-weight:700; margin-bottom:.4rem;
+}
+.tl-title { font-family:'Playfair Display',serif; font-size:1.05rem;
+  color:var(--bleu); font-weight:700; margin-bottom:.5rem; }
+.tl-desc { font-size:.82rem; color:var(--gray); line-height:1.6; }
+.tl-icon {
+  width:2.5rem; height:2.5rem; border-radius:50%;
+  background: var(--bleu); display:flex; align-items:center; justify-content:center;
+  margin-bottom:1rem; font-size:1rem;
+}
+.signature-bar {
+  background: var(--bleu); border-radius:.75rem; padding:1.2rem 2rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.signature-bar .quote {
+  font-family:'Cormorant Garamond',serif; font-size:1.1rem;
+  color:var(--beige); font-style:italic;
+}
+.signature-bar .accent { color: var(--beige2); font-weight:600; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 3 — LE CHÂTEAU
+   ═══════════════════════════════════════════════════════════════════ */
+#s3 { background:var(--bleu); }
+#s3 .photo-bg {
+  position:absolute; inset:0;
+  background:url('chateau-2.jpg') center/cover no-repeat;
+  opacity:.12; filter:saturate(.5);
+}
+#s3 .overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(0,45,65,.98) 45%, rgba(0,45,65,.6));
+}
+#s3 .content { position:relative; z-index:2; padding:0 7vw; width:100%; }
+#s3 .left { max-width:480px; }
+#s3 h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem);
+  color:var(--white); font-weight:700; margin:1rem 0; }
+#s3 .desc { font-family:'Cormorant Garamond',serif; font-size:1.05rem;
+  color:rgba(240,215,170,.75); font-style:italic; line-height:1.7; margin-bottom:2rem; }
+.kpi-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;
+  margin-left:auto;
+}
+.kpi-card {
+  background:rgba(255,255,255,.04); border:1px solid rgba(240,215,170,.15);
+  border-radius:.85rem; padding:1.2rem 1.5rem; text-align:center;
+  backdrop-filter:blur(8px);
+  transition: border-color .3s, transform .3s;
+}
+.kpi-card:hover { border-color:rgba(240,215,170,.4); transform:scale(1.03); }
+.kpi-num {
+  font-family:'Playfair Display',serif; font-size:2.6rem;
+  color:var(--beige); font-weight:900; line-height:1;
+  display:block; margin-bottom:.3rem;
+}
+.kpi-label { font-size:.72rem; color:rgba(255,255,255,.5);
+  font-family:'Inter',sans-serif; letter-spacing:.06em; }
+#s3 .layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+.info-items { margin-top:1.5rem; display:flex; flex-direction:column; gap:.7rem; }
+.info-item { display:flex; align-items:center; gap:.8rem;
+  font-size:.82rem; color:rgba(255,255,255,.6); }
+.info-dot { width:5px; height:5px; border-radius:50%;
+  background:var(--beige2); flex-shrink:0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 4 — SERVICE RH
+   ═══════════════════════════════════════════════════════════════════ */
+#s4 { background: linear-gradient(160deg, #001E2E 0%, #002D41 60%, #003A52 100%); }
+#s4 .content { padding:5vh 7vw; width:100%; }
+#s4 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.5rem 0 2rem; }
+.org-chart {
+  display:flex; flex-direction:column; align-items:center; gap:0;
+}
+.org-row { display:flex; align-items:center; justify-content:center; gap:2rem; width:100%; }
+.org-node {
+  border-radius:.85rem; padding:.9rem 2rem; text-align:center;
+  font-family:'Inter',sans-serif; font-size:.85rem; font-weight:500;
+  position:relative;
+}
+.org-node-top {
+  background:var(--bleu2); border:1px solid rgba(240,215,170,.2);
+  color:var(--white); min-width:180px;
+}
+.org-node-mid {
+  background:rgba(0,88,122,.4); border:1.5px solid rgba(240,215,170,.25);
+  color:var(--white); min-width:280px;
+}
+.org-node-left {
+  background:rgba(255,255,255,.04); border:1px solid rgba(240,215,170,.15);
+  color:rgba(255,255,255,.7); min-width:180px;
+}
+.org-node-me {
+  background:linear-gradient(135deg, var(--bleu3), var(--teal));
+  border:2px solid var(--beige2); color:var(--white);
+  min-width:220px;
+  box-shadow: 0 0 30px rgba(200,168,75,.2);
+}
+.org-name { font-size:.72rem; color:var(--beige); font-weight:600; display:block; margin-top:.2rem; }
+.org-connector {
+  width:1.5px; height:30px; background:rgba(240,215,170,.25);
+  margin:0 auto;
+}
+.org-h-line {
+  height:1.5px; background:rgba(240,215,170,.2); flex:1; max-width:140px;
+}
+.perimeter {
+  margin-top:2rem; background:rgba(240,215,170,.05);
+  border:1px solid rgba(240,215,170,.15); border-radius:.75rem;
+  padding:1rem 1.8rem; text-align:center;
+  font-size:.78rem; color:rgba(240,215,170,.6); letter-spacing:.04em;
+}
+.perimeter strong { color:var(--beige2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 5 — SWOT
+   ═══════════════════════════════════════════════════════════════════ */
+#s5 { background:var(--cream2); }
+#s5 .content { padding:4vh 6vw; width:100%; }
+#s5 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem);
+  color:var(--bleu); margin:.4rem 0 .3rem; }
+#s5 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:var(--gray); font-style:italic; margin-bottom:1.5rem; }
+.swot-grid {
+  display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+  gap:1rem; height:calc(100svh - 220px);
+}
+.swot-cell {
+  border-radius:1rem; padding:1.5rem; position:relative; overflow:hidden;
+  transition:transform .3s, box-shadow .3s;
+}
+.swot-cell:hover { transform:scale(1.02); box-shadow:0 20px 50px rgba(0,0,0,.12); }
+.swot-cell.f  { background:#E8F4EC; border:1px solid rgba(46,91,58,.2); }
+.swot-cell.w  { background:#FCF0F0; border:1px solid rgba(122,53,53,.2); }
+.swot-cell.o  { background:#EBF4F8; border:1px solid rgba(26,107,124,.2); }
+.swot-cell.t  { background:#FDF8EC; border:1px solid rgba(200,168,75,.25); }
+.swot-label {
+  font-family:'Inter',sans-serif; font-size:.6rem; font-weight:700;
+  letter-spacing:.22em; text-transform:uppercase;
+  display:inline-block; padding:.25rem .75rem; border-radius:.3rem; margin-bottom:.8rem;
+}
+.f .swot-label  { background:rgba(46,91,58,.15); color:#2E5B3A; }
+.w .swot-label  { background:rgba(122,53,53,.15); color:#7A3535; }
+.o .swot-label  { background:rgba(26,107,124,.15); color:#1A6B7C; }
+.t .swot-label  { background:rgba(200,168,75,.15); color:#9A7828; }
+.swot-cell h3 { font-family:'Playfair Display',serif; font-size:1rem;
+  color:var(--bleu); font-weight:700; margin-bottom:.6rem; }
+.swot-items { list-style:none; display:flex; flex-direction:column; gap:.35rem; }
+.swot-items li {
+  font-size:.78rem; color:rgba(0,45,65,.75); display:flex; gap:.5rem;
+  align-items:flex-start; line-height:1.4;
+}
+.swot-items li::before { content:'—'; opacity:.4; flex-shrink:0; margin-top:.05em; }
+.swot-rrh {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:3rem; height:3rem; border-radius:50%;
+  background:var(--bleu); display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:.75rem; color:var(--beige);
+  font-weight:700; z-index:10;
+  box-shadow:0 0 0 8px var(--cream2), 0 0 0 9px rgba(240,215,170,.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 6 — BLOC 1 LAMSTER
+   ═══════════════════════════════════════════════════════════════════ */
+#s6 { background:var(--bleu); }
+#s6 .content { padding:4vh 7vw; width:100%; }
+.bloc-header { margin-bottom:2rem; }
+.bloc-num { font-family:'Playfair Display',serif; font-size:5rem; font-weight:900;
+  color:rgba(240,215,170,.06); line-height:1; position:absolute; top:3vh; right:7vw;
+  pointer-events:none; user-select:none; }
+#s6 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.4rem 0 .2rem; }
+#s6 .mission { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:rgba(240,215,170,.6); font-style:italic; margin-bottom:2rem; }
+.four-col { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+.step-card {
+  border-radius:.85rem; padding:1.3rem; position:relative; overflow:hidden;
+  transition:transform .3s, box-shadow .3s;
+}
+.step-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,.3); }
+.step-card.ctx  { background:rgba(0,88,122,.15); border:1px solid rgba(0,88,122,.3); }
+.step-card.enj  { background:rgba(26,107,124,.15); border:1px solid rgba(26,107,124,.3); }
+.step-card.ten  { background:rgba(122,53,53,.15); border:1px solid rgba(122,53,53,.3); }
+.step-card.cont { background:rgba(46,91,58,.15); border:1px solid rgba(46,91,58,.3); }
+.step-icon { font-size:1.5rem; margin-bottom:.6rem; }
+.step-head { font-family:'Inter',sans-serif; font-size:.6rem; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase; margin-bottom:.5rem; }
+.ctx  .step-head { color:#7DC3DC; }
+.enj  .step-head { color:#5DCCDC; }
+.ten  .step-head { color:#E88888; }
+.cont .step-head { color:#7DD89A; }
+.step-body { font-size:.8rem; color:rgba(255,255,255,.7); line-height:1.6; }
+.step-body strong { color:var(--beige); }
+.kpi-bar {
+  background:rgba(240,215,170,.05); border:1px solid rgba(240,215,170,.15);
+  border-radius:.6rem; padding:.9rem 1.5rem;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+}
+.kpi-bar-item { text-align:center; }
+.kpi-bar-num { font-family:'Playfair Display',serif; font-size:1.8rem;
+  color:var(--beige); font-weight:700; display:block; }
+.kpi-bar-lbl { font-size:.65rem; color:rgba(255,255,255,.4); letter-spacing:.08em; }
+.kpi-bar-sep { width:1px; height:2.5rem; background:rgba(240,215,170,.15); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 7 — BLOC 2 RÉMUNÉRATION
+   ═══════════════════════════════════════════════════════════════════ */
+#s7 { background: linear-gradient(160deg, #001E2E, #002D41); }
+#s7 .content { padding:4vh 7vw; width:100%; }
+#s7 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.4rem 0 .2rem; }
+#s7 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:rgba(240,215,170,.6); font-style:italic; margin-bottom:2rem; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+.anomaly-list { display:flex; flex-direction:column; gap:.85rem; }
+.anomaly-item {
+  display:flex; align-items:center; gap:1rem;
+  background:rgba(255,255,255,.03); border:1px solid rgba(240,215,170,.1);
+  border-radius:.75rem; padding:1rem 1.2rem;
+  transition:border-color .3s, transform .3s;
+}
+.anomaly-item:hover { border-color:rgba(240,215,170,.3); transform:translateX(4px); }
+.anomaly-num {
+  width:2rem; height:2rem; border-radius:50%; background:var(--beige2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:.85rem; font-weight:700;
+  color:var(--bleu); flex-shrink:0;
+}
+.anomaly-text { font-size:.82rem; color:rgba(255,255,255,.8); line-height:1.4; }
+.context-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
+.chip {
+  font-size:.68rem; padding:.3rem .8rem; border-radius:2rem;
+  background:rgba(240,215,170,.08); border:1px solid rgba(240,215,170,.2);
+  color:rgba(240,215,170,.7);
+}
+.right-col { display:flex; flex-direction:column; gap:1rem; }
+.enjeu-box, .tension-box {
+  border-radius:.85rem; padding:1.2rem 1.4rem;
+}
+.enjeu-box { background:rgba(0,88,122,.15); border:1px solid rgba(0,88,122,.3); }
+.tension-box { background:rgba(122,53,53,.12); border:1px solid rgba(122,53,53,.25); }
+.box-label { font-size:.6rem; font-weight:700; letter-spacing:.18em;
+  text-transform:uppercase; margin-bottom:.5rem; display:block; }
+.enjeu-box .box-label { color:#7DC3DC; }
+.tension-box .box-label { color:#E88888; }
+.box-text { font-size:.83rem; color:rgba(255,255,255,.8); line-height:1.6; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 8 — BLOC 3.1 PROCÉDURE JURIDIQUE
+   ═══════════════════════════════════════════════════════════════════ */
+#s8 { background:var(--cream); }
+#s8 .content { padding:4vh 7vw; width:100%; }
+#s8 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem);
+  color:var(--bleu); margin:.4rem 0 .2rem; }
+#s8 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:var(--gray); font-style:italic; margin-bottom:1.8rem; }
+.three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:1.5rem; }
+.juri-card {
+  border-radius:1rem; padding:1.5rem;
+  transition:transform .3s, box-shadow .3s;
+}
+.juri-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.1); }
+.juri-card.t { background:#FCF0F0; border:1.5px solid rgba(122,53,53,.25); }
+.juri-card.d { background:#EBF4F8; border:1.5px solid rgba(26,107,124,.25); }
+.juri-card.a { background:#E8F4EC; border:1.5px solid rgba(46,91,58,.25); }
+.juri-icon { font-size:1.8rem; margin-bottom:.7rem; }
+.juri-label { font-size:.6rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  margin-bottom:.5rem; display:block; }
+.t .juri-label { color:#7A3535; }
+.d .juri-label { color:#1A6B7C; }
+.a .juri-label { color:#2E5B3A; }
+.juri-title { font-family:'Playfair Display',serif; font-size:1rem;
+  color:var(--bleu); font-weight:700; margin-bottom:.5rem; }
+.juri-text { font-size:.78rem; color:rgba(0,45,65,.75); line-height:1.6; }
+.principle-bar {
+  background:var(--bleu); border-radius:.75rem; padding:1rem 1.8rem;
+  font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:var(--beige); font-style:italic; text-align:center; line-height:1.5;
+  border-left:3px solid var(--beige2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 9 — BLOC 3.2 CONSEIL MANAGERS
+   ═══════════════════════════════════════════════════════════════════ */
+#s9 { background: linear-gradient(160deg, #001E2E, #002D41 70%, #003A52); }
+#s9 .content { padding:4vh 7vw; width:100%; }
+#s9 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.4rem 0 .2rem; }
+#s9 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:rgba(240,215,170,.6); font-style:italic; margin-bottom:2rem; }
+.cases-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+.case-card {
+  background:rgba(255,255,255,.04); border:1px solid rgba(240,215,170,.12);
+  border-radius:1rem; padding:1.4rem; position:relative; overflow:hidden;
+  transition:border-color .3s, transform .3s, background .3s;
+}
+.case-card:hover {
+  border-color:rgba(240,215,170,.35);
+  background:rgba(255,255,255,.07);
+  transform:translateY(-3px);
+}
+.case-num {
+  font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900;
+  color:rgba(240,215,170,.08); position:absolute; top:.5rem; right:1rem; line-height:1;
+}
+.case-icon { font-size:1.3rem; margin-bottom:.5rem; }
+.case-title { font-family:'Playfair Display',serif; font-size:1rem;
+  color:var(--beige); font-weight:700; margin-bottom:.4rem; }
+.case-text { font-size:.78rem; color:rgba(255,255,255,.65); line-height:1.6; }
+.posture-badge {
+  margin-top:1.5rem; text-align:center;
+  background:linear-gradient(135deg, rgba(200,168,75,.1), rgba(240,215,170,.08));
+  border:1px solid rgba(200,168,75,.3); border-radius:.75rem; padding:.9rem;
+  font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:var(--beige); font-style:italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 10 — BLOC 4.1 RECRUTEMENT
+   ═══════════════════════════════════════════════════════════════════ */
+#s10 { background:var(--cream2); }
+#s10 .content { padding:4vh 7vw; width:100%; }
+#s10 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--bleu); margin:.4rem 0 .2rem; }
+#s10 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:var(--gray); font-style:italic; margin-bottom:1.8rem; }
+.recru-layout { display:grid; grid-template-columns:1fr 1.4fr; gap:2.5rem; align-items:start; }
+.big-kpi {
+  background:var(--bleu); border-radius:1.2rem; padding:2rem; text-align:center;
+  box-shadow: 0 20px 60px rgba(0,45,65,.2); margin-bottom:1.2rem;
+}
+.big-kpi-num {
+  font-family:'Playfair Display',serif; font-size:5rem; font-weight:900;
+  color:var(--beige); line-height:1; display:block;
+  text-shadow: 0 0 40px rgba(240,215,170,.3);
+}
+.big-kpi-lbl { font-size:.85rem; color:rgba(240,215,170,.6); margin-top:.3rem; }
+.channels { display:flex; flex-wrap:wrap; gap:.5rem; }
+.ch-tag {
+  font-size:.7rem; padding:.3rem .8rem; border-radius:.4rem;
+  background:var(--white); border:1px solid rgba(0,45,65,.15);
+  color:var(--bleu); font-weight:500;
+}
+.recru-right { display:flex; flex-direction:column; gap:1rem; }
+.initiative-card {
+  background:var(--bleu); border-radius:1rem; padding:1.4rem;
+  border-left:3px solid var(--beige2); color:var(--white);
+}
+.initiative-card .init-label { font-size:.6rem; font-weight:700; letter-spacing:.18em;
+  color:var(--beige2); text-transform:uppercase; display:block; margin-bottom:.4rem; }
+.initiative-card .init-text { font-size:.82rem; line-height:1.6; color:rgba(255,255,255,.85); }
+.precon-box-light {
+  background:linear-gradient(135deg, rgba(0,45,65,.06), rgba(0,45,65,.03));
+  border:1.5px solid rgba(200,168,75,.35); border-radius:1rem; padding:1.4rem;
+  position:relative; overflow:hidden;
+}
+.precon-box-light::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--beige2), transparent);
+}
+.precon-box-light .precon-label { color:var(--bleu); opacity:.6; }
+.precon-box-light .precon-text { font-size:.82rem; color:var(--bleu); line-height:1.6; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 11 — BLOC 4.2 COMPÉTENCES
+   ═══════════════════════════════════════════════════════════════════ */
+#s11 { background:var(--bleu); }
+#s11 .content { padding:4vh 7vw; width:100%; }
+#s11 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.4rem 0 .2rem; }
+#s11 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:rgba(240,215,170,.6); font-style:italic; margin-bottom:2rem; }
+.comp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:1.5rem; }
+.comp-card {
+  background:rgba(255,255,255,.04); border:1px solid rgba(240,215,170,.12);
+  border-radius:1rem; padding:1.4rem; transition:transform .3s, border-color .3s;
+}
+.comp-card:hover { transform:translateY(-4px); border-color:rgba(240,215,170,.35); }
+.comp-title { font-family:'Playfair Display',serif; font-size:.95rem;
+  color:var(--beige); font-weight:700; margin:0.7rem 0 .5rem; }
+.comp-items { list-style:none; display:flex; flex-direction:column; gap:.3rem; }
+.comp-items li { font-size:.78rem; color:rgba(255,255,255,.65); line-height:1.5;
+  display:flex; gap:.4rem; }
+.comp-items li::before { content:'→'; color:var(--beige2); font-size:.7rem; flex-shrink:0; margin-top:.1em; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 12 — DIAGNOSTIC TRANSVERSAL
+   ═══════════════════════════════════════════════════════════════════ */
+#s12 { background: linear-gradient(160deg, #001A28, #002D41); }
+#s12 .content { padding:4vh 7vw; width:100%; }
+#s12 h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.8rem);
+  color:var(--white); margin:.4rem 0 .2rem; }
+#s12 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
+  color:rgba(240,215,170,.6); font-style:italic; margin-bottom:2rem; }
+.diag-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+.diag-card {
+  background:rgba(255,255,255,.03); border:1px solid rgba(240,215,170,.12);
+  border-radius:1rem; padding:1.5rem; display:flex; gap:1.2rem;
+  transition:border-color .3s, transform .3s, background .3s;
+}
+.diag-card:hover {
+  border-color:rgba(240,215,170,.35);
+  background:rgba(255,255,255,.06);
+  transform:translateY(-3px);
+}
+.diag-num {
+  font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:900;
+  color:rgba(240,215,170,.15); line-height:1; flex-shrink:0; width:2.5rem;
+}
+.diag-body {}
+.diag-title { font-family:'Playfair Display',serif; font-size:1rem;
+  color:var(--beige); font-weight:700; margin-bottom:.4rem; }
+.diag-text { font-size:.78rem; color:rgba(255,255,255,.6); line-height:1.6; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 13 — CE QUE JE RETIENS
+   ═══════════════════════════════════════════════════════════════════ */
+#s13 {
+  background:var(--bleu);
+}
+#s13 .photo-bg {
+  position:absolute; inset:0;
+  background:url('chateau-3.jpg') center/cover no-repeat;
+  opacity:.1; filter:saturate(.4);
+}
+#s13 .overlay { position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(0,45,65,.97), rgba(0,45,65,.85)); }
+#s13 .content { position:relative; z-index:2; padding:4vh 7vw; width:100%; }
+#s13 h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem);
+  color:var(--white); margin:.4rem 0 2rem; }
+.retiens { display:flex; flex-direction:column; gap:.9rem; margin-bottom:2rem; }
+.retien-item {
+  display:flex; align-items:center; gap:1.2rem;
+  background:rgba(255,255,255,.04); border:1px solid rgba(240,215,170,.12);
+  border-radius:.85rem; padding:1rem 1.4rem;
+  transition:border-color .3s, transform .3s;
+}
+.retien-item:hover { border-color:rgba(240,215,170,.35); transform:translateX(4px); }
+.retien-icon {
+  width:2.2rem; height:2.2rem; border-radius:50%;
+  background:rgba(200,168,75,.15); border:1px solid rgba(200,168,75,.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; flex-shrink:0;
+}
+.retien-text { font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.5; }
+.final-quote {
+  background:linear-gradient(135deg, rgba(200,168,75,.08), rgba(240,215,170,.05));
+  border:1px solid rgba(200,168,75,.25); border-radius:.85rem; padding:1.2rem 2rem;
+  font-family:'Cormorant Garamond',serif; font-size:1.15rem;
+  color:var(--beige); font-style:italic; text-align:center; line-height:1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SLIDE 14 — MERCI
+   ═══════════════════════════════════════════════════════════════════ */
+#s14 { background:var(--bleu); }
+#s14 .photo-bg {
+  position:absolute; inset:0;
+  background:url('chateau-1.jpg') center top/cover no-repeat;
+  opacity:.25; filter:saturate(.5);
+}
+#s14 .overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(0,45,65,1) 40%, rgba(0,45,65,.6));
+}
+#s14 .content {
+  position:relative; z-index:2; text-align:center;
+  padding:0 6vw;
+}
+#s14 h2 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,6vw,5rem); font-weight:400;
+  font-style:italic; color:var(--white); margin-bottom:1rem; line-height:1.1;
+}
+#s14 .merci-sub {
+  font-family:'Cormorant Garamond',serif; font-size:1.3rem;
+  color:rgba(240,215,170,.7); font-style:italic; margin-bottom:3rem;
+}
+#s14 .merci-meta {
+  font-family:'Inter',sans-serif; font-size:.75rem; letter-spacing:.12em;
+  color:rgba(255,255,255,.35); text-transform:uppercase;
+}
+#s14 .merci-line { width:60px; height:1px; background:var(--beige2);
+  margin:1.5rem auto; opacity:.5; }
+
+/* ─── KEYBOARD HINT ─────────────────────────────────────────────── */
+.key-hint {
+  position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%);
+  font-size:.62rem; color:rgba(255,255,255,.2); letter-spacing:.12em;
+  font-family:'Inter',sans-serif; z-index:100;
+  transition: opacity .5s;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width:768px) {
+  .four-col, .timeline, .two-col, .three-col, .cases-grid,
+  .comp-grid, .diag-grid, .recru-layout, .swot-grid { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr); }
+  #s3 .layout { grid-template-columns:1fr; }
+  .swot-rrh { display:none; }
+  .nav-dots { display:none; }
+}
+
+/* ─── REDUCED MOTION ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress" id="progress"></div>
+
+<!-- Navigation dots -->
+<nav class="nav-dots" id="navDots" aria-label="Navigation slides"></nav>
+
+<!-- Slide counter -->
+<div class="slide-counter" id="slideCounter">01 / 14</div>
+
+<!-- Keyboard hint -->
+<div class="key-hint" id="keyHint">↑ ↓ pour naviguer</div>
+
+<div class="deck" id="deck">
+
+<!-- ═══ SLIDE 1 — COUVERTURE ════════════════════════════════════════ -->
+<section class="slide" id="s1" data-label="Couverture">
+  <div class="hero-photo"></div>
+  <div class="hero-overlay"></div>
+  <div class="jardins"></div>
+  <div class="deco-circle" style="width:600px;height:600px;right:-200px;top:-200px;opacity:.04;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;right:50px;top:50px;opacity:.06;"></div>
+
+  <div class="content">
+    <p class="eyebrow animate delay-1">Dossier de Valorisation des Compétences · IFOCOP Melun</p>
+    <h1 class="animate delay-2">Responsable<br><em>Ressources Humaines</em></h1>
+    <p class="sub animate delay-3">
+      Château de Vaux-le-Vicomte · Titre RNCP Niveau 6<br>
+      Sandrine PAYET
+    </p>
+    <div class="meta animate delay-4">
+      <span>⬦ Lundi 22 juin 2026</span>
+      <span>⬦ Vaux-le-Vicomte · Maincy</span>
+      <span>⬦ 20 minutes</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="arrow"></div>
+    <span>DÉFILER</span>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 2 — PARCOURS ═════════════════════════════════════════ -->
+<section class="slide" id="s2" data-label="Parcours">
+  <div class="content">
+    <p class="badge animate">Mon Parcours</p>
+    <h2 class="animate delay-1">Une reconversion bâtie sur l'humain</h2>
+    <p class="sub2 animate delay-2">De l'assurance à la RH — chaque étape prépare la suivante</p>
+
+    <div class="timeline">
+      <div class="tl-card animate delay-2">
+        <div class="tl-icon">⏱</div>
+        <div class="tl-year">2019</div>
+        <div class="tl-title">Gestionnaire de Paie</div>
+        <p class="tl-desc">IFOCOP Melun · Formation intensive orientée métier · Opérationnelle rapidement · Rigueur technique & réglementaire</p>
+      </div>
+      <div class="tl-card animate delay-3">
+        <div class="tl-icon">🏛</div>
+        <div class="tl-year">2020–2025</div>
+        <div class="tl-title">Assistante de Direction</div>
+        <p class="tl-desc">EPIC · 6 ans · Vision globale de l'organisation · Contrats, éléments variables de paie, planification · Dimension RH polyvalente</p>
+      </div>
+      <div class="tl-card animate delay-4">
+        <div class="tl-icon">🎓</div>
+        <div class="tl-year">2026</div>
+        <div class="tl-title">Responsable RH</div>
+        <p class="tl-desc">IFOCOP Melun · Stratégie, GEPP, conduite du changement · Vision à long terme : la formation, ma vocation première</p>
+      </div>
+    </div>
+
+    <div class="signature-bar animate delay-5">
+      <span style="font-size:1.4rem">✦</span>
+      <p class="quote">
+        <span class="accent">Rigueur & Bienveillance</span> — le fil conducteur de tout mon parcours professionnel
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 3 — LE CHÂTEAU ══════════════════════════════════════ -->
+<section class="slide" id="s3" data-label="Vaux-le-Vicomte">
+  <div class="photo-bg"></div>
+  <div class="overlay"></div>
+  <div class="deco-grid"></div>
+
+  <div class="content">
+    <div class="layout">
+      <div class="left">
+        <p class="badge animate anim-left">L'entreprise d'accueil</p>
+        <h2 class="animate anim-left delay-1">Château de<br>Vaux-le-Vicomte</h2>
+        <hr class="gold-line animate delay-2">
+        <p class="desc animate delay-2">Plus grand monument historique privé de France · Famille de Vogüé · 5ᵉ génération</p>
+        <div class="info-items animate delay-3">
+          <div class="info-item"><span class="info-dot"></span>1 000 ha dont 33 ha de jardins à la française</div>
+          <div class="info-item"><span class="info-dot"></span>5 structures juridiques · 3 conventions collectives</div>
+          <div class="info-item"><span class="info-dot"></span>ELAC · HCR · Convention agricole</div>
+          <div class="info-item"><span class="info-dot"></span>Jusqu'à 5 000 visiteurs/jour en période de Noël</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="kpi-grid">
+          <div class="kpi-card animate delay-2">
+            <span class="kpi-num">300K</span>
+            <span class="kpi-label">visiteurs / an</span>
+          </div>
+          <div class="kpi-card animate delay-3">
+            <span class="kpi-num">20%</span>
+            <span class="kpi-label">visiteurs étrangers</span>
+          </div>
+          <div class="kpi-card animate delay-4">
+            <span class="kpi-num">5</span>
+            <span class="kpi-label">entités juridiques</span>
+          </div>
+          <div class="kpi-card animate delay-5">
+            <span class="kpi-num">3</span>
+            <span class="kpi-label">conventions collectives</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 4 — SERVICE RH ══════════════════════════════════════ -->
+<section class="slide" id="s4" data-label="Service RH">
+  <div class="deco-grid" style="opacity:.5;"></div>
+  <div class="deco-circle" style="width:500px;height:500px;left:-200px;bottom:-150px;"></div>
+
+  <div class="content">
+    <p class="badge animate">Organisation</p>
+    <h2 class="animate delay-1">Le Service RH & mon Positionnement</h2>
+    <hr class="gold-line animate delay-1">
+
+    <div class="org-chart animate delay-2">
+      <div class="org-row">
+        <div class="org-node org-node-top">
+          <strong>Gérant</strong>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+      <div class="org-row">
+        <div class="org-node org-node-mid">
+          Responsable RH
+          <span class="org-name">Marion Michaud-Guilain · Tutrice</span>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+      <div class="org-row" style="position:relative;">
+        <div class="org-h-line"></div>
+        <div style="display:flex;gap:2rem;">
+          <div class="org-node org-node-left">
+            Gestionnaire Paie & ADP
+          </div>
+          <div class="org-node org-node-me">
+            ✦ Sandrine PAYET
+            <span class="org-name">Gestionnaire RH Généraliste</span>
+          </div>
+        </div>
+        <div class="org-h-line" style="opacity:0;"></div>
+      </div>
+    </div>
+
+    <div class="perimeter animate delay-5">
+      <strong>Périmètre transversal :</strong>
+      Administration du personnel · Paie · GEPP · Recrutement · Dialogue social · Accompagnement du changement
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 5 — SWOT ════════════════════════════════════════════ -->
+<section class="slide" id="s5" data-label="Diagnostic SWOT">
+  <div class="content" style="height:100svh; display:flex; flex-direction:column; padding:3vh 6vw;">
+    <div style="margin-bottom:1.2rem;">
+      <p class="badge animate" style="background:rgba(0,45,65,.1);color:var(--bleu);border-color:rgba(0,45,65,.2);">Diagnostic RH</p>
+      <h2 class="animate delay-1">Contexte stratégique de réalisation</h2>
+      <p class="sub animate delay-2">Analyse du terrain d'intervention · Châ;teau de Vaux-le-Vicomte</p>
+    </div>
+
+    <div class="swot-grid" style="flex:1;">
+      <div class="swot-cell f animate delay-2">
+        <span class="swot-label">Forces</span>
+        <h3>Atouts du groupe</h3>
+        <ul class="swot-items">
+          <li>Patrimoine d'exception · forte notoriété nationale</li>
+          <li>Identité familiale & savoir-faire événementiel reconnu</li>
+          <li>Cadre de travail attractif · vie collective riche</li>
+        </ul>
+      </div>
+      <div class="swot-cell w animate delay-3">
+        <span class="swot-label">Faiblesses</span>
+        <h3>Points de vigilance</h3>
+        <ul class="swot-items">
+          <li>Forte saisonnalité · plannings très complexes</li>
+          <li>Process peu formalisés · pratiques hétérogènes</li>
+          <li>Charge administrative RH considérable</li>
+        </ul>
+      </div>
+      <div class="swot-cell o animate delay-4">
+        <span class="swot-label">Opportunités</span>
+        <h3>Leviers de croissance</h3>
+        <ul class="swot-items">
+          <li>Digitalisation RH (Lamster, SILAE, dématérialisation)</li>
+          <li>Développement marque employeur & attractivité</li>
+          <li>Attentes RSE & QVCT croissantes</li>
+        </ul>
+      </div>
+      <div class="swot-cell t animate delay-5">
+        <span class="swot-label">Menaces</span>
+        <h3>Risques à anticiper</h3>
+        <ul class="swot-items">
+          <li>Concurrence sites patrimoniaux (Versailles…)</li>
+          <li>Recrutement saisonnier difficile sur profils spécifiques</li>
+          <li>Contraintes réglementaires strictes (ERP, MH, droit du travail)</li>
+        </ul>
+      </div>
+      <div class="swot-rrh">RRH</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 6 — BLOC 1 LAMSTER ═════════════════════════════════ -->
+<section class="slide" id="s6" data-label="Bloc 1 · Lamster">
+  <div class="deco-grid"></div>
+  <div class="deco-circle" style="width:400px;height:400px;right:-100px;bottom:-100px;opacity:.06;"></div>
+
+  <div class="content" style="position:relative;">
+    <div class="bloc-num">01</div>
+    <p class="badge animate">Bloc 1 · Projet RSE</p>
+    <h2 class="animate delay-1">Déploiement Lamster · Conduite du changement</h2>
+    <p class="mission animate delay-2">GTA · 80 → 180 salariés · Fév. – Juin 2026 · Co-pilotage</p>
+
+    <div class="four-col animate delay-3">
+      <div class="step-card ctx">
+        <div class="step-icon">🗂</div>
+        <div class="step-head">Contexte</div>
+        <p class="step-body">Pratiques hétérogènes : congés sur papier, Excel par service, aucune vision consolidée.<br><strong>Risque juridique réel</strong> (art. L3121-18).</p>
+      </div>
+      <div class="step-card enj">
+        <div class="step-icon">⚖️</div>
+        <div class="step-head">Enjeu RH</div>
+        <p class="step-body">Sécuriser la conformité sociale. Restaurer <strong>l'équité de traitement</strong> entre services et statuts (QVCT).</p>
+      </div>
+      <div class="step-card ten">
+        <div class="step-icon">⚠️</div>
+        <div class="step-head">Tension</div>
+        <p class="step-body">Résistances « flicage ». Problèmes de compatibilité GTA/paie. Paramétrage périodes congés cadres/non-cadres.</p>
+      </div>
+      <div class="step-card cont">
+        <div class="step-icon">✅</div>
+        <div class="step-head">Contribution</div>
+        <p class="step-body">Communication centrée sur le <strong>sens & l'équité</strong>. Groupes ≤ 12. Autonomie progressive des sessions.</p>
+      </div>
+    </div>
+
+    <div class="kpi-bar animate delay-4">
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-num">51</span>
+        <span class="kpi-bar-lbl">non-cadres formés</span>
+      </div>
+      <div class="kpi-bar-sep"></div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-num">9</span>
+        <span class="kpi-bar-lbl">sessions animées</span>
+      </div>
+      <div class="kpi-bar-sep"></div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-num">1er juin</span>
+        <span class="kpi-bar-lbl">déploiement effectif</span>
+      </div>
+      <div class="kpi-bar-sep"></div>
+      <div class="precon-box" style="flex:1;">
+        <span class="precon-label">Préconisation RSE</span>
+        <p style="font-size:.8rem;color:rgba(255,255,255,.85);">Dématérialisation progressive : contrats, avenants, signatures électroniques, notes de service, CR CSE.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 7 — BLOC 2 RÉMUNÉRATION ════════════════════════════ -->
+<section class="slide" id="s7" data-label="Bloc 2 · Rémunération">
+  <div class="deco-grid"></div>
+
+  <div class="content">
+    <div class="bloc-num" style="color:rgba(240,215,170,.05);">02</div>
+    <p class="badge animate">Bloc 2 · Rémunération & Paie</p>
+    <h2 class="animate delay-1">Analyse, corrections & préconisation salariale</h2>
+    <p class="sub animate delay-2">5 entités · 3 conventions collectives · Règles légales variables selon l'entité de rattachement</p>
+
+    <div class="two-col animate delay-3">
+      <div>
+        <p class="tag tag-gold" style="margin-bottom:.8rem;">3 Anomalies identifiées & corrigées</p>
+        <div class="anomaly-list">
+          <div class="anomaly-item">
+            <div class="anomaly-num">①</div>
+            <p class="anomaly-text">Salariée rémunérée sur base temps plein alors qu'employée à temps partiel — courrier de régularisation rédigé avec bienveillance</p>
+          </div>
+          <div class="anomaly-item">
+            <div class="anomaly-num">②</div>
+            <p class="anomaly-text">Inversion des taux salarié/patronal sur la cotisation prévoyance cadres — courrier d'explication aux salariés concernés</p>
+          </div>
+          <div class="anomaly-item">
+            <div class="anomaly-num">③</div>
+            <p class="anomaly-text">Écart salarial salarié expérimenté — avenant d'augmentation rédigé en autonomie · Reconnaissance des compétences</p>
+          </div>
+        </div>
+        <div class="context-chips">
+          <span class="chip">SILAE (formation en cours)</span>
+          <span class="chip">Quadra-CEGID</span>
+          <span class="chip">Multi-conventionnel</span>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <div class="enjeu-box">
+          <span class="box-label">Enjeu RH</span>
+          <p class="box-text">Préserver l'équité salariale malgré des règles légales variables selon l'entité de rattachement. Sentiment d'équité dans un groupe juridiquement hétérogène.</p>
+        </div>
+        <div class="tension-box">
+          <span class="box-label">Tension identifiée</span>
+          <p class="box-text">Politique de rémunération sur les salaires directs non encore formalisée à l'échelle du groupe. Risque de reproduction des anomalies.</p>
+        </div>
+        <div class="precon-box">
+          <span class="precon-label">✦ Préconisation</span>
+          <p style="font-size:.83rem;color:rgba(255,255,255,.9);line-height:1.6;">Analyse des salaires CDI : égalité H/F, cohérence par statut et service. Première étape vers une politique salariale structurée et juridiquement sécurisée.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 8 — BLOC 3.1 PROCÉDURE JURIDIQUE ═══════════════════ -->
+<section class="slide" id="s8" data-label="Bloc 3.1 · Procédure juridique">
+  <div class="content">
+    <p class="badge animate" style="background:rgba(0,45,65,.08);color:var(--bleu);border-color:rgba(0,45,65,.2);">Bloc 3 · Activité 1</p>
+    <h2 class="animate delay-1">Sécuriser une procédure à haut risque juridique</h2>
+    <p class="sub animate delay-2">Présomption de démission · Salarié protégé titulaire CSE · Droit non encore fixé</p>
+
+    <div class="three-col animate delay-3">
+      <div class="juri-card t">
+        <div class="juri-icon">⚖️</div>
+        <span class="juri-label">Tension juridique</span>
+        <h3 class="juri-title">Incertitude jurisprudentielle</h3>
+        <p class="juri-text">CA Paris, 06/03/2025 : nullité sans autorisation IT. Contre-position de l'IT : pas d'autorisation requise. Jurisprudence non stabilisée — droit non fixé par la Cour de cassation.</p>
+      </div>
+      <div class="juri-card d">
+        <div class="juri-icon">🛡</div>
+        <span class="juri-label">Ma démarche</span>
+        <h3 class="juri-title">Recherche & sécurisation</h3>
+        <p class="juri-text">Veille jurisprudentielle autonome. Saisine de l'IT conseillée & validée par l'avocat. Consultation préalable du CSE. Archivage systématique de la réponse IT comme preuve en cas de contentieux.</p>
+      </div>
+      <div class="juri-card a">
+        <div class="juri-icon">→</div>
+        <span class="juri-label">Anticipation opérationnelle</span>
+        <h3 class="juri-title">Solution contractuelle adaptée</h3>
+        <p class="juri-text">CDD saisonnier proposé : juridiquement adapté à l'activité touristique. Double qualification APS-SSIAP 1. Ouverture d'un poste supplémentaire obtenue.</p>
+      </div>
+    </div>
+
+    <div class="principle-bar animate delay-5">
+      « Dans un dossier à haut risque contentieux, la prudence juridique n'est jamais une erreur — même si elle va au-delà de ce que l'administration considère nécessaire. »
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 9 — BLOC 3.2 CONSEIL MANAGERS ═════════════════════ -->
+<section class="slide" id="s9" data-label="Bloc 3.2 · Conseil managers">
+  <div class="deco-grid"></div>
+
+  <div class="content">
+    <div class="bloc-num" style="color:rgba(240,215,170,.04);">03</div>
+    <p class="badge animate">Bloc 3 · Activité 2</p>
+    <h2 class="animate delay-1">Conseil RH auprès des Managers</h2>
+    <p class="sub animate delay-2">Posture proactive · Rigueur juridique & relation de confiance · 4 situations illustratives</p>
+
+    <div class="cases-grid animate delay-3">
+      <div class="case-card">
+        <span class="case-num">01</span>
+        <div class="case-icon">👤</div>
+        <h3 class="case-title">Droit du travail — manager terrain</h3>
+        <p class="case-text">Accompagnement global : durées maximales, temps de repos, forfait jours, non-discrimination en recrutement. Suivi post-entretiens — conviction que le conseil ne se limite pas à l'information.</p>
+      </div>
+      <div class="case-card" style="border-color:rgba(200,168,75,.25);">
+        <span class="case-num">02</span>
+        <div class="case-icon">🤝</div>
+        <h3 class="case-title">Rupture conventionnelle refusée</h3>
+        <p class="case-text">Direction réticente · salariée nouvellement en CDI. Échange individuel bienveillant : expliquer que notre décision visait d'abord à préserver ses intérêts. <em>Confiance maintenue.</em></p>
+      </div>
+      <div class="case-card">
+        <span class="case-num">03</span>
+        <div class="case-icon">📅</div>
+        <h3 class="case-title">Journée de solidarité</h3>
+        <p class="case-text">Réponse technique formulée en autonomie — heures au-delà de 7h intégrées au compteur de récupération. Vérification systématique avant transmission : démarche de conseil responsable.</p>
+      </div>
+      <div class="case-card">
+        <span class="case-num">04</span>
+        <div class="case-icon">💬</div>
+        <h3 class="case-title">Tension organisationnelle</h3>
+        <p class="case-text">Premier niveau d'écoute en l'absence de la tutrice. Approche structurée proposée : message hiérarchique écrit + rencontre collaborateurs pour restaurer la confiance et la communication ascendante.</p>
+      </div>
+    </div>
+
+    <div class="posture-badge animate delay-7">
+      ✦ Rigueur juridique & intelligence relationnelle — le cœur du métier de RRH conseil
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 10 — BLOC 4.1 RECRUTEMENT ═════════════════════════ -->
+<section class="slide" id="s10" data-label="Bloc 4.1 · Recrutement">
+  <div class="content">
+    <p class="badge animate" style="background:rgba(0,45,65,.08);color:var(--bleu);border-color:rgba(0,45,65,.2);">Bloc 4 · Activité 1</p>
+    <h2 class="animate delay-1">Piloter le Recrutement</h2>
+    <p class="sub animate delay-2">De A à Z · ~15 postes simultanés · Jardinier au chef de projet événementiel</p>
+
+    <div class="recru-layout animate delay-3">
+      <div>
+        <div class="big-kpi">
+          <span class="big-kpi-num">~15</span>
+          <p class="big-kpi-lbl">postes pilotés simultanément<br>de A à Z</p>
+        </div>
+        <p class="tag tag-bleu" style="margin-bottom:.6rem;">Sourcing multicanal</p>
+        <div class="channels">
+          <span class="ch-tag">Indeed</span>
+          <span class="ch-tag">France Travail</span>
+          <span class="ch-tag">APEC</span>
+          <span class="ch-tag">LinkedIn</span>
+          <span class="ch-tag">Site du Château</span>
+          <span class="ch-tag">Emploi Accompagné 77</span>
+        </div>
+      </div>
+
+      <div class="recru-right">
+        <div class="initiative-card">
+          <span class="init-label">✦ Initiative clé — Prise en autonomie</span>
+          <p class="init-text">Refonte complète de l'annonce APS-SSIAP 1 : élimination des candidatures non pertinentes, sécurisation du contenu (risque identifié par l'adjoint). Validée par toutes les parties prenantes.</p>
+        </div>
+
+        <div class="enjeu-box" style="background:rgba(0,88,122,.1);border:1px solid rgba(0,88,122,.25);">
+          <span class="box-label" style="color:#5DCCDC;">Participation à la Journée de l'Emploi Accompagné 77</span>
+          <p class="box-text">Découverte d'un nouveau canal de sourcing inclusif. Dispositif d'insertion à intégrer aux futures campagnes.</p>
+        </div>
+
+        <div class="precon-box-light">
+          <span class="precon-label">✦ Préconisation</span>
+          <p class="precon-text"><strong>Grille d'entretien structurée</strong> : objectiver l'évaluation, réduire la discrimination inconsciente, harmoniser les pratiques entre services.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 11 — BLOC 4.2 COMPÉTENCES ═════════════════════════ -->
+<section class="slide" id="s11" data-label="Bloc 4.2 · Compétences">
+  <div class="deco-grid"></div>
+  <div class="deco-circle" style="width:500px;height:500px;left:-200px;top:-100px;opacity:.05;"></div>
+
+  <div class="content">
+    <div class="bloc-num" style="color:rgba(240,215,170,.04);">04</div>
+    <p class="badge animate">Bloc 4 · Activité 2</p>
+    <h2 class="animate delay-1">Développer les Compétences</h2>
+    <p class="sub animate delay-2">OPCO · EPP · Formations · Sensibilisation CPF · Vision stratégique PDC 3 ans</p>
+
+    <div class="comp-grid animate delay-3">
+      <div class="comp-card">
+        <span class="tag tag-teal">OPCO & Réforme EPP</span>
+        <h3 class="comp-title">Cadre réglementaire</h3>
+        <ul class="comp-items">
+          <li>2 OPCO : AFDAS & AKTO — fonds non mutualisables entre entités juridiques</li>
+          <li>Loi Seniors (oct. 2025) : EPP rebaptisé, nouvelles périodicités</li>
+          <li>Nouveaux formulaires & convocations créés dès l'arrivée</li>
+          <li>Accompagnement des managers sur le nouveau dispositif</li>
+        </ul>
+      </div>
+      <div class="comp-card">
+        <span class="tag tag-green">Actions terrain</span>
+        <h3 class="comp-title">Réalisations concrètes</h3>
+        <ul class="comp-items">
+          <li>3 sessions CPF individuelles · 8 salariés SERV rencontrés</li>
+          <li>Formation gestion conflits · 10 participants (6 CDI + 4 saisonniers récurrents)</li>
+          <li>Co-construction avec l'organisme de formation : adapté aux situations réelles</li>
+          <li>Sensibilisation retraite · Formation FLE en cours (inclusion)</li>
+        </ul>
+      </div>
+      <div class="comp-card">
+        <span class="tag tag-gold">Vision stratégique</span>
+        <h3 class="comp-title">PDC 3 ans — Préconisation</h3>
+        <ul class="comp-items">
+          <li>Formations obligatoires mobilisent l'essentiel du budget (CACES, Certiphyto, SST)</li>
+          <li>Nécessité d'anticiper les compétences de demain</li>
+          <li>PDC sur 3 ans : prioriser, anticiper, optimiser les financements OPCO</li>
+          <li>Chantier partagé avec la tutrice · Vision RH stratégique réelle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="precon-box animate delay-6">
+      <span class="precon-label">✦ Préconisation centrale — Plan de Développement des Compétences · 3 ans</span>
+      <p style="font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.6;">Anticiper les besoins · Prioriser en cohérence avec la stratégie du groupe · Optimiser le recours aux financements disponibles · Inscrire la GEPP dans la durée</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 12 — DIAGNOSTIC TRANSVERSAL ════════════════════════ -->
+<section class="slide" id="s12" data-label="Diagnostic transversal">
+  <div class="deco-grid"></div>
+
+  <div class="content">
+    <p class="badge animate">Vision stratégique</p>
+    <h2 class="animate delay-1">Diagnostic Transversal</h2>
+    <p class="sub animate delay-2">4 axes de structuration RH pour accompagner durablement la croissance du groupe</p>
+
+    <div class="diag-grid animate delay-3">
+      <div class="diag-card">
+        <div class="diag-num">01</div>
+        <div class="diag-body">
+          <span class="tag tag-teal">Harmoniser</span>
+          <h3 class="diag-title">Pratiques & conformité</h3>
+          <p class="diag-text">Déploiement Lamster comme outil d'harmonisation. Politique salariale formalisée. Charte télétravail. Équité de traitement pour tous les collaborateurs, quel que soit le service ou l'entité.</p>
+        </div>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">02</div>
+        <div class="diag-body">
+          <span class="tag tag-gold">Piloter</span>
+          <h3 class="diag-title">Outils RH & GEPP</h3>
+          <p class="diag-text">BDESE enrichie · Taux de turn-over, heures de formation, budget par entité. PDC sur 3 ans. GEPP structurée : anticiper les évolutions des emplois et des compétences.</p>
+        </div>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">03</div>
+        <div class="diag-body">
+          <span class="tag tag-green">Attirer & Fidéliser</span>
+          <h3 class="diag-title">Attractivité & intégration</h3>
+          <p class="diag-text">Parcours d'intégration « Vis ma vie ». Tutorat. Livret d'accueil. Marque employeur structurée via LinkedIn. Des atouts réels à mieux valoriser.</p>
+        </div>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">04</div>
+        <div class="diag-body">
+          <span class="tag tag-bleu">Culture</span>
+          <h3 class="diag-title">Un atout pour transformer</h3>
+          <p class="diag-text">Bienveillance ancrée dans les décisions quotidiennes. Engagement sincère de la direction. Un terreau favorable à l'adhésion au changement et à la structuration durable de la fonction RH.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 13 — CE QUE JE RETIENS ════════════════════════════ -->
+<section class="slide" id="s13" data-label="Ce que je retiens">
+  <div class="photo-bg"></div>
+  <div class="overlay"></div>
+  <div class="deco-circle" style="width:500px;height:500px;right:-100px;top:-100px;opacity:.06;"></div>
+
+  <div class="content">
+    <p class="badge animate" style="border-color:rgba(240,215,170,.3);">Conclusion</p>
+    <h2 class="animate delay-1">Ce que je retiens</h2>
+    <hr class="gold-line animate delay-2">
+
+    <div class="retiens animate delay-2">
+      <div class="retien-item">
+        <div class="retien-icon">✓</div>
+        <p class="retien-text"><strong style="color:var(--beige);">Compétences RH confirmées</strong> sur l'ensemble du périmètre — droit du travail, paie, recrutement, GEPP, dialogue social, conduite du changement</p>
+      </div>
+      <div class="retien-item">
+        <div class="retien-icon">✦</div>
+        <p class="retien-text"><strong style="color:var(--beige);">Confiance professionnelle retrouvée</strong> — capacité démontrée à prendre en charge des dossiers complexes et sensibles en autonomie</p>
+      </div>
+      <div class="retien-item">
+        <div class="retien-icon">🎓</div>
+        <p class="retien-text"><strong style="color:var(--beige);">Le goût de transmettre confirmé</strong> — formations Lamster, sensibilisations CPF · Un projet à long terme : revenir vers la formation, ma vocation première</p>
+      </div>
+      <div class="retien-item">
+        <div class="retien-icon">→</div>
+        <p class="retien-text"><strong style="color:var(--beige);">Poursuite de la mission au Château</strong> · CDD jusqu'à fin 2026 · Continuer à contribuer à la structuration et au développement RH du domaine</p>
+      </div>
+    </div>
+
+    <div class="final-quote animate delay-6">
+      « Apporter ma pierre — modestement mais avec conviction —<br>à la construction de ce beau projet collectif. »
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 14 — MERCI ══════════════════════════════════════════ -->
+<section class="slide" id="s14" data-label="Merci">
+  <div class="photo-bg"></div>
+  <div class="overlay"></div>
+  <div class="deco-grid" style="opacity:.3;"></div>
+
+  <div class="content">
+    <p class="badge animate" style="margin-bottom:2rem;">Sandrine PAYET · RNCP Niveau 6</p>
+    <h2 class="animate delay-1">Merci de<br>votre attention.</h2>
+    <div class="merci-line animate delay-2"></div>
+    <p class="merci-sub animate delay-3">Je suis à votre écoute pour vos questions.</p>
+    <p class="merci-meta animate delay-4">
+      Château de Vaux-le-Vicomte · IFOCOP Melun · Lundi 22 juin 2026
+    </p>
+  </div>
+</section>
+
+</div><!-- .deck -->
+
+<script>
+// ─── SETUP ──────────────────────────────────────────────────────────
+const deck   = document.getElementById('deck');
+const slides = [...document.querySelectorAll('.slide')];
+const dots   = document.getElementById('navDots');
+const prog   = document.getElementById('progress');
+const counter= document.getElementById('slideCounter');
+const keyHint= document.getElementById('keyHint');
+const N = slides.length;
+let current = 0;
+let scrollLocked = false;
+
+// Build nav dots
+slides.forEach((s, i) => {
+  const d = document.createElement('button');
+  d.className = 'nav-dot'; d.setAttribute('aria-label', s.dataset.label || `Slide ${i+1}`);
+  d.addEventListener('click', () => goTo(i));
+  dots.appendChild(d);
+});
+
+function updateUI(idx) {
+  current = idx;
+  // Dots
+  document.querySelectorAll('.nav-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+  // Progress
+  prog.style.width = ((idx / (N-1)) * 100) + '%';
+  // Counter
+  const n = String(idx+1).padStart(2,'0');
+  const t = String(N).padStart(2,'0');
+  counter.textContent = `${n} / ${t}`;
+  // Hide key hint after first scroll
+  if (idx > 0) keyHint.style.opacity = '0';
+}
+
+function goTo(idx) {
+  idx = Math.max(0, Math.min(N-1, idx));
+  slides[idx].scrollIntoView({ behavior:'smooth' });
+  updateUI(idx);
+}
+
+// ─── INTERSECTION OBSERVER ───────────────────────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio > 0.6) {
+      const idx = slides.indexOf(e.target);
+      e.target.classList.add('visible');
+      updateUI(idx);
+    }
+  });
+}, { threshold: 0.6, root: deck });
+
+slides.forEach(s => io.observe(s));
+
+// ─── KEYBOARD NAV ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault(); goTo(current + 1);
+  } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    e.preventDefault(); goTo(current - 1);
+  }
+});
+
+// ─── TOUCH / SWIPE ──────────────────────────────────────────────────
+let touchY = 0;
+deck.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive:true });
+deck.addEventListener('touchend',   e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 40) goTo(current + (dy > 0 ? 1 : -1));
+}, { passive:true });
+
+// ─── INIT ────────────────────────────────────────────────────────────
+updateUI(0);
+slides[0].classList.add('visible');
+prog.style.width = '0%';
+
+// Animate decorative circles slowly
+document.querySelectorAll('.deco-circle').forEach((c, i) => {
+  c.style.animation = `float ${6 + i * 2}s ease-in-out infinite ${i * 0.8}s`;
+});
+</script>
+</body>
+</html>
