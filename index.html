@@ -445,8 +445,12 @@ body {
 #s5 .sub { font-family:'Cormorant Garamond',serif; font-size:1rem;
   color:var(--gray); font-style:italic; margin-bottom:1.5rem; }
 .swot-grid {
-  display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
-  gap:1rem; height:calc(100svh - 220px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  height: calc(100svh - 220px);
+  position: relative; /* ◄ Ajoute ça pour créer le repère de la bulle */
 }
 .swot-cell {
   border-radius:1rem; padding:1.5rem; position:relative; overflow:hidden;
